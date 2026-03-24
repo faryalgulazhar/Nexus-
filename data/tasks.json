@@ -14,7 +14,7 @@
       "dueDate": "2026-03-18",
       "subject": "Literature",
       "priority": "medium",
-      "completed": true
+      "completed": false
     },
     {
       "title": "Study for Math",

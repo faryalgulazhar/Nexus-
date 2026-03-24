@@ -14,7 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { DarkModeToggle } from "@/components/DarkModeToggle";
+import { Navbar } from "@/components/Navbar";
+import { AuthProvider } from "@/context/AuthContext";
 
 export default function RootLayout({
   children,
@@ -33,26 +34,12 @@ export default function RootLayout({
           defaultTheme="light"
           disableTransitionOnChange
         >
-          <header className="sticky top-0 z-50 w-full border-b" style={{background: 'var(--bg-nav)', borderColor: 'var(--border-color)', color: 'var(--text-primary)'}}>
-            <nav className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-              <div className="flex items-center gap-8">
-                <Link href="/" className="flex items-center gap-2 group">
-                  <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold group-hover:scale-110 transition-transform">N</div>
-                  <span className="font-bold text-lg tracking-tight">Nexus</span>
-                </Link>
-                <div className="hidden md:flex items-center gap-1">
-                  <Link href="/" className="px-4 py-2 rounded-xl text-sm font-medium hover:bg-zinc-100 dark:hover:bg-gray-800 transition-colors">Home</Link>
-                  <Link href="/tasks" className="px-4 py-2 rounded-xl text-sm font-medium hover:bg-zinc-100 dark:hover:bg-gray-800 transition-colors">Tasks</Link>
-                </div>
-              </div>
-              <div className="flex items-center gap-4">
-                <DarkModeToggle />
-              </div>
-            </nav>
-          </header>
+          <AuthProvider>
+            <Navbar />
           <main className="flex-grow">
             {children}
           </main>
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

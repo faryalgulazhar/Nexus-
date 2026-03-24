@@ -106,3 +106,45 @@ export async function DELETE(request: Request) {
     return NextResponse.json({ error: 'Failed to delete task' }, { status: 500 });
   }
 }
+
+export async function PATCH(request: Request) {
+  try {
+    const { id, completed } = await request.json();
+    
+    if (!id) {
+      return NextResponse.json({ error: 'ID is required' }, { status: 400 });
+    }
+    const taskId = parseInt(id.toString());
+
+    if (useKV) {
+      const existingTasks = (await kv.get<any[]>(TASKS_KEY)) || [];
+      const taskIndex = existingTasks.findIndex((t: any) => t.id === taskId);
+      
+      if (taskIndex === -1) {
+        return NextResponse.json({ error: 'Task not found' }, { status: 404 });
+      }
+      
+      existingTasks[taskIndex].completed = completed;
+      await kv.set(TASKS_KEY, existingTasks);
+      return NextResponse.json({ message: 'Task updated successfully' });
+    }
+
+    // Fallback to local FS
+    ensureDataFile();
+    const data = JSON.parse(readFileSync(filePath, 'utf-8'));
+    const existingTasks = data.tasks || [];
+    const taskIndex = existingTasks.findIndex((t: any) => t.id === taskId);
+    
+    if (taskIndex === -1) {
+      return NextResponse.json({ error: 'Task not found' }, { status: 404 });
+    }
+    
+    existingTasks[taskIndex].completed = completed;
+    data.tasks = existingTasks;
+    writeFileSync(filePath, JSON.stringify(data, null, 2));
+    return NextResponse.json({ message: 'Task updated successfully' });
+  } catch (error) {
+    console.error('API PATCH Error:', error);
+    return NextResponse.json({ error: 'Failed to update task' }, { status: 500 });
+  }
+}

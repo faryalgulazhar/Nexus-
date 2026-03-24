@@ -16,6 +16,7 @@ export default function TasksPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [isSortedByDate, setIsSortedByDate] = useState(false);
 
   useEffect(() => {
     async function fetchTasks() {
@@ -55,9 +56,35 @@ export default function TasksPage() {
     }
   };
 
-  const filteredTasks = tasks.filter(task => 
+  const handleToggleComplete = async (taskId: number, currentStatus: boolean) => {
+    try {
+      const res = await fetch(`/api/tasks`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: taskId, completed: !currentStatus })
+      });
+
+      if (res.ok) {
+        setTasks(tasks.map(task => 
+          task.id === taskId ? { ...task, completed: !currentStatus } : task
+        ));
+      } else {
+        const error = await res.json();
+        alert(error.error || 'Failed to update task');
+      }
+    } catch (error) {
+      console.error('Update error:', error);
+      alert('An error occurred while updating the task');
+    }
+  };
+
+  let filteredTasks = tasks.filter(task => 
     task.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  if (isSortedByDate) {
+    filteredTasks = [...filteredTasks].sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
+  }
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 p-6 md:p-12 font-sans">
@@ -99,6 +126,22 @@ export default function TasksPage() {
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-12 pr-4 py-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all dark:text-zinc-50 dark:placeholder-zinc-500 text-lg"
           />
+        </div>
+
+        <div className="flex justify-end mb-6">
+          <button
+            onClick={() => setIsSortedByDate(!isSortedByDate)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-colors border shadow-sm ${
+              isSortedByDate 
+                ? 'bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-900/30 dark:text-indigo-400 dark:border-indigo-800/50 hover:bg-indigo-100 dark:hover:bg-indigo-900/50' 
+                : 'bg-white text-zinc-700 border-zinc-200 hover:bg-zinc-50 dark:bg-zinc-900 dark:text-zinc-300 dark:border-zinc-800 dark:hover:bg-zinc-800'
+            }`}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
+            </svg>
+            {isSortedByDate ? 'Original Order' : 'Sort by Date'}
+          </button>
         </div>
 
         {isLoading ? (
@@ -158,11 +201,23 @@ export default function TasksPage() {
                   </span>
                 </div>
                 
-                <div className="mt-auto flex items-center text-sm font-medium text-zinc-500 dark:text-zinc-400 gap-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-indigo-500/70">
-                    <path fillRule="evenodd" d="M5.75 2a.75.75 0 011.5 0v1.5h5.5V2a.75.75 0 011.5 0v1.5h5.625c.621 0 1.125.504 1.125 1.125v11.75c0 .621-.504 1.125-1.125 1.125H4.25A1.125 1.125 0 013 15.25V4.625C3 4.004 3.504 3.5 4.125 3.5H5.75V2zM4.5 7v8h15V7h-15z" clipRule="evenodd" />
-                  </svg>
-                   Due: {new Date(task.dueDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                <div className="mt-auto flex items-center justify-between">
+                  <div className="flex items-center text-sm font-medium text-zinc-500 dark:text-zinc-400 gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-indigo-500/70">
+                      <path fillRule="evenodd" d="M5.75 2a.75.75 0 011.5 0v1.5h5.5V2a.75.75 0 011.5 0v1.5h5.625c.621 0 1.125.504 1.125 1.125v11.75c0 .621-.504 1.125-1.125 1.125H4.25A1.125 1.125 0 013 15.25V4.625C3 4.004 3.504 3.5 4.125 3.5H5.75V2zM4.5 7v8h15V7h-15z" clipRule="evenodd" />
+                    </svg>
+                    Due: {new Date(task.dueDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                  </div>
+                  <button
+                    onClick={() => handleToggleComplete(task.id, task.completed)}
+                    className={`px-3 py-1.5 text-xs font-semibold rounded-lg border transition-all ${
+                      task.completed 
+                        ? 'bg-zinc-100 text-zinc-600 border-zinc-200 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-400 dark:border-zinc-700 dark:hover:bg-zinc-700' 
+                        : 'bg-indigo-50 text-indigo-600 border-indigo-200 hover:bg-indigo-100 dark:bg-indigo-900/30 dark:text-indigo-400 dark:border-indigo-800/50 dark:hover:bg-indigo-900/50'
+                    }`}
+                  >
+                    {task.completed ? 'Mark Incomplete' : 'Mark Complete'}
+                  </button>
                 </div>
               </div>
             ))}
