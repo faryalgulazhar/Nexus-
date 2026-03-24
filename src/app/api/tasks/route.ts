@@ -1,21 +1,27 @@
-import { readFileSync, writeFileSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { kv } from '@vercel/kv';
 
 export const dynamic = 'force-dynamic';
 
-const filePath = path.join(process.cwd(), 'data', 'tasks.json');
+const dataDir = path.join(process.cwd(), 'data');
+const filePath = path.join(dataDir, 'tasks.json');
 const TASKS_KEY = 'tasks_data'; // Key for Vercel KV
 
 // Check if we should use Vercel KV (production/Vercel) or FS (local)
 const useKV = !!process.env.KV_REST_API_URL;
 
-// Helper to ensure data file exists (for local FS)
+// Helper to ensure data file and directory exist (for local FS)
 function ensureDataFile() {
-  if (!useKV && !existsSync(filePath)) {
-    const initialData = { tasks: [] };
-    writeFileSync(filePath, JSON.stringify(initialData, null, 2));
+  if (!useKV) {
+    if (!existsSync(dataDir)) {
+      mkdirSync(dataDir, { recursive: true });
+    }
+    if (!existsSync(filePath)) {
+      const initialData = { tasks: [] };
+      writeFileSync(filePath, JSON.stringify(initialData, null, 2));
+    }
   }
 }
 
