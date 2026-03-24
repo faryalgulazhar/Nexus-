@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 interface Task {
-  id: number;
+  id: string;
   title: string;
   dueDate: string;
   subject?: string;
@@ -18,22 +18,23 @@ export default function TasksPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [isSortedByDate, setIsSortedByDate] = useState(false);
 
-  useEffect(() => {
-    async function fetchTasks() {
-      try {
-        const res = await fetch('/api/tasks');
-        const data = await res.json();
-        setTasks(data || []);
-      } catch (error) {
-        console.error("Failed to fetch tasks:", error);
-      } finally {
-        setIsLoading(false);
-      }
+  const fetchTasks = async () => {
+    try {
+      const res = await fetch('/api/tasks');
+      const data = await res.json();
+      setTasks(data || []);
+    } catch (error) {
+      console.error("Failed to fetch tasks:", error);
+    } finally {
+      setIsLoading(false);
     }
+  };
+
+  useEffect(() => {
     fetchTasks();
   }, []);
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: string) => {
     if (!window.confirm('Are you sure you want to delete this task?')) {
       return;
     }
@@ -44,8 +45,7 @@ export default function TasksPage() {
       });
 
       if (res.ok) {
-        // Update local state immediately
-        setTasks(tasks.filter(task => task.id !== id));
+        await fetchTasks();
       } else {
         const error = await res.json();
         alert(error.error || 'Failed to delete task');
@@ -56,7 +56,7 @@ export default function TasksPage() {
     }
   };
 
-  const handleToggleComplete = async (taskId: number, currentStatus: boolean) => {
+  const handleToggleComplete = async (taskId: string, currentStatus: boolean) => {
     try {
       const res = await fetch(`/api/tasks`, {
         method: 'PATCH',
