@@ -30,11 +30,10 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col selection:bg-indigo-100 dark:selection:bg-indigo-900/40 selection:text-indigo-700 dark:selection:text-indigo-300">
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
-          enableSystem
+          defaultTheme="light"
           disableTransitionOnChange
         >
-          <header className="sticky top-0 z-50 w-full border-b border-zinc-200/50 dark:border-zinc-800/50 bg-white/70 dark:bg-zinc-900/70 backdrop-blur-xl">
+          <header className="sticky top-0 z-50 w-full border-b" style={{background: 'var(--bg-nav)', borderColor: 'var(--border-color)', color: 'var(--text-primary)'}}>
             <nav className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
               <div className="flex items-center gap-8">
                 <Link href="/" className="flex items-center gap-2 group">
@@ -42,8 +41,8 @@ export default function RootLayout({
                   <span className="font-bold text-lg tracking-tight">Nexus</span>
                 </Link>
                 <div className="hidden md:flex items-center gap-1">
-                  <Link href="/" className="px-4 py-2 rounded-xl text-sm font-medium hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">Home</Link>
-                  <Link href="/tasks" className="px-4 py-2 rounded-xl text-sm font-medium hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">Tasks</Link>
+                  <Link href="/" className="px-4 py-2 rounded-xl text-sm font-medium hover:bg-zinc-100 dark:hover:bg-gray-800 transition-colors">Home</Link>
+                  <Link href="/tasks" className="px-4 py-2 rounded-xl text-sm font-medium hover:bg-zinc-100 dark:hover:bg-gray-800 transition-colors">Tasks</Link>
                 </div>
               </div>
               <div className="flex items-center gap-4">

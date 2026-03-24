@@ -1,6 +1,25 @@
 @import "tailwindcss";
 
 :root {
+  --bg-page: #f9fafb;
+  --bg-card: #ffffff;
+  --bg-nav: rgba(255,255,255,0.7);
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+  --border-color: rgba(228,228,231,0.5);
+}
+html.dark {
+  --bg-page: #111827;
+  --bg-card: #1f2937;
+  --bg-nav: #1f2937;
+  --text-primary: #f9fafb;
+  --text-secondary: #d1d5db;
+  --border-color: rgba(55,65,81,0.5);
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
   --background: #ffffff;
   --foreground: #171717;
 }
@@ -12,13 +31,25 @@
   --font-mono: var(--font-geist-mono);
 }
 
-.dark {
-  --background: #09090b; /* zinc-950 */
-  --foreground: #fafafa; /* zinc-50 */
-}
-
+/* Base styles */
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Dark mode overrides */
+.dark {
+  --background: #111827;
+  --foreground: #f9fafb;
+  
+  /* Override zinc colors to the required gray palette in dark mode */
+  --color-zinc-950: #111827; /* Page Background */
+  --color-zinc-900: #1f2937; /* Cards & Navbar */
+  --color-zinc-800: #374151; /* Borders and toggles */
+  --color-zinc-700: #4b5563;
+  --color-zinc-50: #f9fafb;  /* Main text */
+  --color-zinc-300: #d1d5db; /* Secondary text */
+  --color-zinc-400: #9ca3af; /* Muted text */
+  --color-zinc-500: #6b7280;
 }
