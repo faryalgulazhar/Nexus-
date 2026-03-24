@@ -31,9 +31,13 @@ export default function NewTaskPage() {
 
       if (res.ok) {
         router.push('/tasks');
+      } else {
+        const error = await res.json();
+        alert(error.error || 'Failed to add task. If you are deployed, ensure your database is configured correctly.');
       }
     } catch (error) {
       console.error('Failed to add task:', error);
+      alert('An unexpected error occurred. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
