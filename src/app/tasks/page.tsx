@@ -43,12 +43,14 @@ export default function TasksPage() {
               Stay on top of your coursework and deadlines.
             </p>
           </div>
-          <Link
-             href="/"
-             className="px-5 py-2.5 rounded-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors shadow-sm"
-          >
-            &larr; Back to Home
-          </Link>
+          <div className="flex gap-3">
+            <Link
+              href="/tasks/new"
+              className="px-5 py-2.5 rounded-full bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors shadow-sm shadow-indigo-500/20 shadow-lg"
+            >
+              + Add Task
+            </Link>
+          </div>
         </header>
 
         {isLoading ? (
