@@ -31,6 +31,29 @@ export default function TasksPage() {
     fetchTasks();
   }, []);
 
+  const handleDelete = async (id: number) => {
+    if (!window.confirm('Are you sure you want to delete this task?')) {
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/tasks?id=${id}`, {
+        method: 'DELETE',
+      });
+
+      if (res.ok) {
+        // Update local state immediately
+        setTasks(tasks.filter(task => task.id !== id));
+      } else {
+        const error = await res.json();
+        alert(error.error || 'Failed to delete task');
+      }
+    } catch (error) {
+      console.error('Delete error:', error);
+      alert('An error occurred while deleting the task');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 p-6 md:p-12 font-sans">
       <div className="max-w-5xl mx-auto">
@@ -73,13 +96,24 @@ export default function TasksPage() {
             {tasks.map((task) => (
               <div
                 key={task.id}
-                className={`flex flex-col p-6 rounded-3xl border transition-all duration-300 ${
+                className={`group relative flex flex-col p-6 rounded-3xl border transition-all duration-300 ${
                   task.completed
                     ? "bg-zinc-100/50 dark:bg-zinc-900/40 border-zinc-200/60 dark:border-zinc-800/60 opacity-80 shadow-sm"
                     : "bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 shadow-xl shadow-zinc-200/20 dark:shadow-black/40 hover:-translate-y-1 hover:shadow-2xl"
                 }`}
               >
-                <div className="flex justify-between items-start mb-6 gap-3">
+                {/* Delete Button */}
+                <button
+                  onClick={() => handleDelete(task.id)}
+                  className="absolute top-4 right-4 p-2 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:text-red-400 transition-all opacity-0 group-hover:opacity-100"
+                  aria-label="Delete task"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                </button>
+
+                <div className="flex justify-between items-start mb-6 gap-3 pr-8">
                   <h3 className={`font-semibold text-xl line-clamp-2 ${task.completed ? "text-zinc-500 line-through dark:text-zinc-500" : "text-zinc-900 dark:text-zinc-50"}`}>
                     {task.title}
                   </h3>

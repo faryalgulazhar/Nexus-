@@ -23,22 +23,6 @@
       "subject": "History",
       "priority": "low",
       "completed": false
-    },
-    {
-      "title": "Study for Statistics ",
-      "dueDate": "2026-04-14",
-      "subject": "Statistical data processing ",
-      "priority": "low",
-      "completed": false,
-      "id": 4
-    },
-    {
-      "title": "Exam for tech for business ",
-      "dueDate": "2026-03-27",
-      "subject": "Mathematics",
-      "priority": "high",
-      "completed": false,
-      "id": 5
     }
   ]
 }
