@@ -15,6 +15,7 @@ interface Task {
 export default function TasksPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     async function fetchTasks() {
@@ -54,6 +55,10 @@ export default function TasksPage() {
     }
   };
 
+  const filteredTasks = tasks.filter(task => 
+    task.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 p-6 md:p-12 font-sans">
       <div className="max-w-5xl mx-auto">
@@ -76,6 +81,26 @@ export default function TasksPage() {
           </div>
         </header>
 
+        <div className="mb-8 relative group">
+          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+            <svg 
+              className="h-5 w-5 text-zinc-400 group-focus-within:text-indigo-500 transition-colors" 
+              fill="none" 
+              viewBox="0 0 24 24" 
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+          <input
+            type="text"
+            placeholder="Search tasks..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-12 pr-4 py-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all dark:text-zinc-50 dark:placeholder-zinc-500 text-lg"
+          />
+        </div>
+
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-32">
             <div className="relative w-16 h-16">
@@ -91,9 +116,14 @@ export default function TasksPage() {
             <h3 className="text-xl font-bold text-zinc-900 dark:text-zinc-50">No tasks found</h3>
             <p className="text-zinc-500 mt-2 max-w-sm text-center">Your schedule is clear! Add a new task to get started.</p>
           </div>
+        ) : filteredTasks.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-20 bg-white dark:bg-zinc-900 rounded-3xl border border-dashed border-zinc-300 dark:border-zinc-800">
+            <h3 className="text-xl font-bold text-zinc-900 dark:text-zinc-50">No matches found</h3>
+            <p className="text-zinc-500 mt-2 max-w-sm text-center">No tasks matching "{searchTerm}"</p>
+          </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {tasks.map((task) => (
+            {filteredTasks.map((task) => (
               <div
                 key={task.id}
                 className={`group relative flex flex-col p-6 rounded-3xl border transition-all duration-300 ${
@@ -137,7 +167,8 @@ export default function TasksPage() {
               </div>
             ))}
           </div>
-        )}
+        )
+}
       </div>
     </div>
   );
