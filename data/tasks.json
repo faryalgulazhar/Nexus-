@@ -25,52 +25,12 @@
       "id": 3
     },
     {
-      "title": "Akram",
-      "dueDate": "2007-02-20",
+      "title": "Tech for business",
+      "dueDate": "",
       "subject": "",
       "priority": "medium",
       "completed": false,
       "id": 4
-    },
-    {
-      "title": "Nam Bien ",
-      "dueDate": "2007-02-12",
-      "subject": "",
-      "priority": "high",
-      "completed": false,
-      "id": 5
-    },
-    {
-      "title": "Jérémy",
-      "dueDate": "2004-01-01",
-      "subject": "",
-      "priority": "medium",
-      "completed": false,
-      "id": 6
-    },
-    {
-      "title": "Margaretha ",
-      "dueDate": "2002-02-21",
-      "subject": "",
-      "priority": "medium",
-      "completed": false,
-      "id": 7
-    },
-    {
-      "title": "Delete me ",
-      "dueDate": "",
-      "subject": "Nope ",
-      "priority": "medium",
-      "completed": false,
-      "id": 8
-    },
-    {
-      "title": "Hi",
-      "dueDate": "2026-03-03",
-      "subject": "Bye ",
-      "priority": "medium",
-      "completed": false,
-      "id": 9
     }
   ]
 }
